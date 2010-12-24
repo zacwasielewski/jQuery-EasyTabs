@@ -56,7 +56,7 @@
           $defaultTabLink;
 
       $tabs.each(function(){
-        targetId = $(this).children("a").attr("href").substr(1);
+        targetId = getHashFromURL($(this).children("a").attr("href"));
         $matchingPanel = $container.find("div[id=" + targetId + "]");
         if ( $matchingPanel.size() > 0 ) {
           $panels = $panels.add($matchingPanel.hide());
@@ -108,7 +108,7 @@
       $container.data("easytabs").defaultTab = $defaultTab;
       $container.data("easytabs").defaultTabLink = $defaultTabLink;
       
-      $panels.filter("#" + $defaultTabLink.attr("href").substr(1)).show().addClass(opts.panelActiveClass);
+      $panels.filter("#" + getHashFromURL($defaultTabLink.attr("href"))).show().addClass(opts.panelActiveClass);
       $defaultTab.addClass(opts.tabActiveClass).children().addClass(opts.tabActiveClass);
     },
     selectTab: function($container,callback){
@@ -120,7 +120,7 @@
           skipUpdateToHash = data.skipUpdateToHash,
           $tabs = data.tabs,
           $panels = data.panels,
-          $targetPanel = $panels.filter( $clicked.attr("href") ),
+          $targetPanel = $panels.filter( '#' + getHashFromURL($clicked.attr("href")) ),
           $defaultTabLink = data.defaultTabLink,
           transitions = ( opts.animate ) ? {
             show: "fadeIn",
@@ -151,7 +151,7 @@
             if ( opts.updateHash && ! skipUpdateToHash ) {
               //window.location = url.toString().replace((url.pathname + hash), (url.pathname + $clicked.attr("href")));
               // Not sure why this behaves so differently, but it's more straight forward and seems to have less side-effects
-              window.location.hash = $clicked.attr("href");
+              window.location.hash = getHashFromURL($clicked.attr('href'));
             } else {
               $container.data("easytabs").skipUpdateToHash = false;
             }
@@ -247,4 +247,9 @@
       $.fn.easytabs.methods.selectTab.apply($tab, [$container]);
     }
   }
+  
+  function getHashFromURL(url){
+    return url.split("#")[1] || '';
+  }
+  
 })(jQuery);
